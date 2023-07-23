@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using online_course_platform.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<OnlineCoursesContext>(options => options.UseSqlServer("Server=localhost;Database=Online_Courses;User=sa;Password=Password_123;TrustServerCertificate=true"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
