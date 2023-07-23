@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+using online_course_platform.Models;
+
 namespace online_course_platform.Data;
+
 
 public partial class OnlineCoursesContext : DbContext
 {
