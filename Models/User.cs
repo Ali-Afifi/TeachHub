@@ -13,12 +13,12 @@ public partial class User
 
     public DateTime BirthDate { get; set; }
 
-    // gender:
     // 1 --> male       0 --> female
-    //
     public bool Gender { get; set; }
 
     public string UserName { get; set; } = null!;
 
     public string PasswordHash { get; set; } = null!;
+
+    public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 }

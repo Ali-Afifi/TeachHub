@@ -14,4 +14,8 @@ public partial class Course
     public DateTime StartDate { get; set; }
 
     public DateTime EndDate { get; set; }
+
+    public int? InstructorId { get; set; }
+
+    public virtual User? Instructor { get; set; }
 }
