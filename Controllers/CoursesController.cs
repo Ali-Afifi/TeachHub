@@ -22,9 +22,8 @@ namespace online_course_platform.Controllers
         // GET: Courses
         public async Task<IActionResult> Index()
         {
-              return _context.Courses != null ? 
-                          View(await _context.Courses.ToListAsync()) :
-                          Problem("Entity set 'OnlineCoursesContext.Courses'  is null.");
+            var onlineCoursesContext = _context.Courses.Include(c => c.Instructor);
+            return View(await onlineCoursesContext.ToListAsync());
         }
 
         // GET: Courses/Details/5
@@ -36,6 +35,7 @@ namespace online_course_platform.Controllers
             }
 
             var course = await _context.Courses
+                .Include(c => c.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
@@ -48,6 +48,7 @@ namespace online_course_platform.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
+            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -56,7 +57,7 @@ namespace online_course_platform.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CourseName,Description,StartDate,EndDate")] Course course)
+        public async Task<IActionResult> Create([Bind("Id,CourseName,Description,StartDate,EndDate,InstructorId")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -64,6 +65,7 @@ namespace online_course_platform.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id", course.InstructorId);
             return View(course);
         }
 
@@ -80,6 +82,7 @@ namespace online_course_platform.Controllers
             {
                 return NotFound();
             }
+            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id", course.InstructorId);
             return View(course);
         }
 
@@ -88,7 +91,7 @@ namespace online_course_platform.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseName,Description,StartDate,EndDate")] Course course)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseName,Description,StartDate,EndDate,InstructorId")] Course course)
         {
             if (id != course.Id)
             {
@@ -115,6 +118,7 @@ namespace online_course_platform.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id", course.InstructorId);
             return View(course);
         }
 
@@ -127,6 +131,7 @@ namespace online_course_platform.Controllers
             }
 
             var course = await _context.Courses
+                .Include(c => c.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
