@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-
 using online_course_platform.Models;
 
 namespace online_course_platform.Data;
-
 
 public partial class OnlineCoursesContext : DbContext
 {
@@ -47,9 +45,14 @@ public partial class OnlineCoursesContext : DbContext
             entity.Property(e => e.EndDate)
                 .HasColumnType("date")
                 .HasColumnName("end_date");
+            entity.Property(e => e.InstructorId).HasColumnName("instructor_id");
             entity.Property(e => e.StartDate)
                 .HasColumnType("date")
                 .HasColumnName("start_date");
+
+            entity.HasOne(d => d.Instructor).WithMany(p => p.Courses)
+                .HasForeignKey(d => d.InstructorId)
+                .HasConstraintName("FK_Course_Instructor_Id");
         });
 
         modelBuilder.Entity<Enrolled>(entity =>
