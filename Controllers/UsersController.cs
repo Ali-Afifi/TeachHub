@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +23,33 @@ namespace online_course_platform.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-              return _context.Users != null ? 
-                          View(await _context.Users.ToListAsync()) :
-                          Problem("Entity set 'OnlineCoursesContext.Users'  is null.");
+
+            var users = await _context.Users.ToListAsync();
+
+            var roles = await _context.Roles.ToListAsync();
+
+            var usersInfo = (from user in users
+                             join role in roles on user.Id equals role.UserId
+                             select new
+                             {
+                                 ID = user.Id,
+                                 FirstName = user.FirstName,
+                                 LastName = user.LastName,
+                                 BirthDate = user.BirthDate,
+                                 Gender = user.Gender ? "Male" : "Female",
+                                 UserName = user.UserName,
+                                 UserRole = role.Role1
+                             }).ToList();
+
+
+
+            dynamic model = new ExpandoObject();
+
+            model.Users = usersInfo;
+
+            return View(model);
+
+
         }
 
         // GET: Users/Details/5
@@ -35,14 +60,25 @@ namespace online_course_platform.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+
+            var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
+            
+            if (user == null || role == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+
+            dynamic model = new ExpandoObject();
+
+            model.User = user;
+            model.Role = role;
+
+            return View(model);
+
+
+            // return View(user);
         }
 
         // GET: Users/Create
@@ -76,6 +112,8 @@ namespace online_course_platform.Controllers
             }
 
             var user = await _context.Users.FindAsync(id);
+            var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
+
             if (user == null)
             {
                 return NotFound();
@@ -150,14 +188,14 @@ namespace online_course_platform.Controllers
             {
                 _context.Users.Remove(user);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(int id)
         {
-          return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
