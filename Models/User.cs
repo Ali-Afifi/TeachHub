@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace online_course_platform.Models;
 
@@ -11,6 +12,7 @@ public partial class User
 
     public string LastName { get; set; } = null!;
 
+    [DataType(DataType.Date)]
     public DateTime BirthDate { get; set; }
 
     // 1 --> male       0 --> female
