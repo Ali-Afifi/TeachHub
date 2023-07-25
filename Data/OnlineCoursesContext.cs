@@ -84,15 +84,14 @@ public partial class OnlineCoursesContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasNoKey();
-
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Role1)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("role");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.HasOne(d => d.User).WithMany(p => p.Roles)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Roles_user_id");

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace online_course_platform.Models;
 
@@ -12,10 +11,11 @@ public partial class User
 
     public string LastName { get; set; } = null!;
 
-    [DataType(DataType.Date)]
     public DateTime BirthDate { get; set; }
 
-    // 1 --> male       0 --> female
+    /// <summary>
+    /// 1 --&gt; male       0 --&gt; female
+    /// </summary>
     public bool Gender { get; set; }
 
     public string UserName { get; set; } = null!;
@@ -23,4 +23,6 @@ public partial class User
     public string PasswordHash { get; set; } = null!;
 
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
+
+    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }
