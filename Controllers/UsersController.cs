@@ -160,13 +160,21 @@ namespace online_course_platform.Controllers
             }
 
             var user = await _context.Users.FindAsync(id);
-            // var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
+            var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
 
-            if (user == null)
+            if (user == null || role == null)
             {
                 return NotFound();
             }
-            return View(user);
+
+            dynamic model = new ExpandoObject();
+
+            model.User = user;
+            model.Role = role;
+
+            return View(model);
+
+            // return View(user);
         }
 
         // POST: Users/Edit/5
