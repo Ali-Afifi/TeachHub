@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using online_course_platform.Data;
 using online_course_platform.Models;
@@ -63,7 +64,7 @@ namespace online_course_platform.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
 
             var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
-            
+
             if (user == null || role == null)
             {
                 return NotFound();
@@ -77,8 +78,6 @@ namespace online_course_platform.Controllers
 
             return View(model);
 
-
-            // return View(user);
         }
 
         // GET: Users/Create
@@ -92,15 +91,64 @@ namespace online_course_platform.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,BirthDate,Gender,UserName,PasswordHash")] User user)
+        public async Task<IActionResult> Create(IFormCollection collection)
         {
-            if (ModelState.IsValid)
+            try
             {
+
+                var userInfo = new
+                {
+                    FirstName = collection["FirstName"],
+                    LastName = collection["LastName"],
+                    BirthDate = collection["BirthDate"],
+                    Gender = collection["Gender"],
+                    Role = collection["Role"],
+                    UserName = collection["UserName"],
+                    Password = collection["Password"]
+                };
+
+
+
+                User user = new()
+                {
+                    FirstName = userInfo.FirstName,
+                    LastName = userInfo.LastName,
+                    BirthDate = DateTime.Parse(userInfo.BirthDate),
+                    Gender = true && userInfo.Gender == "Male",
+                    UserName = userInfo.UserName,
+                    PasswordHash = userInfo.Password
+                };
+
+
+
                 _context.Add(user);
                 await _context.SaveChangesAsync();
+
+
+                Role role = new()
+                {
+                    UserId = user.Id,
+                    Role1 = userInfo.Role,
+                };
+
+
+                _context.Add(role);
+                await _context.SaveChangesAsync();
+
+
                 return RedirectToAction(nameof(Index));
+
             }
-            return View(user);
+        
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("------------exception-start-------");
+                System.Console.WriteLine(ex.Message);
+                System.Console.WriteLine("------------exception--end----------");
+                ViewData["Error"] = "Please fill the whole form";
+
+                return View();
+            }
         }
 
         // GET: Users/Edit/5
@@ -112,7 +160,7 @@ namespace online_course_platform.Controllers
             }
 
             var user = await _context.Users.FindAsync(id);
-            var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
+            // var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
 
             if (user == null)
             {
@@ -159,19 +207,27 @@ namespace online_course_platform.Controllers
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Users == null)
+           if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+
+            var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
+
+            if (user == null || role == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+
+            dynamic model = new ExpandoObject();
+
+            model.User = user;
+            model.Role = role;
+
+            return View(model);
         }
 
         // POST: Users/Delete/5
@@ -183,9 +239,13 @@ namespace online_course_platform.Controllers
             {
                 return Problem("Entity set 'OnlineCoursesContext.Users'  is null.");
             }
+            
             var user = await _context.Users.FindAsync(id);
-            if (user != null)
+            var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
+            
+            if (user != null && role != null)
             {
+                _context.Roles.Remove(role);
                 _context.Users.Remove(user);
             }
 
