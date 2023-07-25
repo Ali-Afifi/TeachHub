@@ -1,7 +1,14 @@
-@model online_course_platform.Models.User
+@model dynamic
 
 @{
     ViewData["Title"] = "Edit";
+}
+
+
+@if (Convert.ToString(ViewData["Error"]) != "") {
+    <div class="alert alert-danger" role="alert">
+        @ViewData["Error"]
+    </div>
 }
 
 <h1>Edit</h1>
@@ -10,38 +17,58 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <label  class="control-label">First Name</label>
+                <input  class="form-control" name="FirstName" value="@Model.User.FirstName"/>
+                <span  class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <label  class="control-label">Last Name</label>
+                <input  class="form-control" name="LastName" value="@Model.User.LastName"/>
+                <span  class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BirthDate" class="control-label"></label>
-                <input asp-for="BirthDate" class="form-control" />
-                <span asp-validation-for="BirthDate" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Gender" /> @Html.DisplayNameFor(model => model.Gender)
-                </label>
+                <label  class="control-label">Birth Date</label>
+                <input  class="form-control" type="date" name="BirthDate" value="@Model.User.BirthDate.ToString("yyyy-MM-dd")"/>
+                <span  class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
+                <label class="control-label" > Choose Gender</label>
+                <div class="form-check">
+                    <input class="form-check-input"  type="radio" name="Gender" id="flexRadioDefault1" value="Male" @(Model.User.Gender ? "checked" : string.Empty)>
+                    <label class="form-check-label" >
+                        Male
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input"  type="radio" name="Gender" id="flexRadioDefault2" value="Female" @(!Model.User.Gender ? "checked" : string.Empty)> 
+                    <label class="form-check-label" >
+                        Female
+                    </label>
+                </div>
+
             </div>
             <div class="form-group">
-                <label asp-for="PasswordHash" class="control-label"></label>
-                <input asp-for="PasswordHash" class="form-control" />
-                <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                <select class="form-select" aria-label="Default select example" name="Role">
+                    <option value="Student" selected>Student</option>
+                    <option value="Instructor">Instructor</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">User Name</label>
+                <input  class="form-control" name="UserName" value="@Model.User.UserName"/>
+                <span  class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">Password</label>
+                <input  class="form-control" type="password" name="Password" value="@Model.User.PasswordHash"/>
+                <span  class="text-danger"></span>
+            </div>
+            <div class= "form-group">
+                <label for=""></label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
