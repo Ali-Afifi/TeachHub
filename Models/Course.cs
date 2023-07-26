@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace online_course_platform.Models;
 
@@ -11,7 +12,10 @@ public partial class Course
 
     public string Description { get; set; } = null!;
 
+    [DataType(DataType.Date)]
     public DateTime StartDate { get; set; }
+
+    [DataType(DataType.Date)]
 
     public DateTime EndDate { get; set; }
 
