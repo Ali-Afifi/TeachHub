@@ -139,7 +139,7 @@ namespace online_course_platform.Controllers
                 return RedirectToAction(nameof(Index));
 
             }
-        
+
             catch (Exception ex)
             {
                 System.Console.WriteLine("------------exception-start-------");
@@ -173,8 +173,6 @@ namespace online_course_platform.Controllers
             model.Role = role;
 
             return View(model);
-
-            // return View(user);
         }
 
         // POST: Users/Edit/5
@@ -182,40 +180,88 @@ namespace online_course_platform.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,BirthDate,Gender,UserName,PasswordHash")] User user)
+        public async Task<IActionResult> Edit(int id, IFormCollection collection)
         {
-            if (id != user.Id)
+
+
+            try
             {
-                return NotFound();
+
+                var userInfo = new
+                {
+                    FirstName = collection["FirstName"],
+                    LastName = collection["LastName"],
+                    BirthDate = collection["BirthDate"],
+                    Gender = collection["Gender"],
+                    Role = collection["Role"],
+                    UserName = collection["UserName"],
+                    Password = collection["Password"]
+                };
+
+
+
+                User user = new()
+                {
+                    Id = id,
+                    FirstName = userInfo.FirstName,
+                    LastName = userInfo.LastName,
+                    BirthDate = DateTime.Parse(userInfo.BirthDate),
+                    Gender = true && userInfo.Gender == "Male",
+                    UserName = userInfo.UserName,
+                    PasswordHash = userInfo.Password
+                };
+
+
+
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+
+
+                var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
+
+                role.Role1 = userInfo.Role;
+
+
+                _context.Update(role);
+                await _context.SaveChangesAsync();
+
+
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (!UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    System.Console.WriteLine("------------db-exception-start-------");
+                    System.Console.WriteLine(ex.Message);
+                    System.Console.WriteLine("------------db-exception--end----------");
+                    ViewData["Error"] = "a problem has occurred, please try again";
+
+                    return View();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("------------exception-start-------");
+                System.Console.WriteLine(ex.Message);
+                System.Console.WriteLine("------------exception--end----------");
+                ViewData["Error"] = "Please fill the whole form";
+
+                return View();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
         }
 
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-           if (id == null || _context.Users == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
@@ -247,10 +293,10 @@ namespace online_course_platform.Controllers
             {
                 return Problem("Entity set 'OnlineCoursesContext.Users'  is null.");
             }
-            
+
             var user = await _context.Users.FindAsync(id);
             var role = await _context.Roles.FirstOrDefaultAsync(m => m.UserId == id);
-            
+
             if (user != null && role != null)
             {
                 _context.Roles.Remove(role);
