@@ -57,26 +57,24 @@ public partial class OnlineCoursesContext : DbContext
 
         modelBuilder.Entity<Enrolled>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Enrolled");
+            entity.ToTable("Enrolled");
 
             entity.Property(e => e.CourseId).HasColumnName("course_id");
             entity.Property(e => e.Grade).HasColumnName("grade");
             entity.Property(e => e.InstructorId).HasColumnName("instructor_id");
             entity.Property(e => e.StudentId).HasColumnName("student_id");
 
-            entity.HasOne(d => d.Course).WithMany()
+            entity.HasOne(d => d.Course).WithMany(p => p.Enrolleds)
                 .HasForeignKey(d => d.CourseId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Enrolled_course_id");
 
-            entity.HasOne(d => d.Instructor).WithMany()
+            entity.HasOne(d => d.Instructor).WithMany(p => p.EnrolledInstructors)
                 .HasForeignKey(d => d.InstructorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Enrolled_instructor_id");
 
-            entity.HasOne(d => d.Student).WithMany()
+            entity.HasOne(d => d.Student).WithMany(p => p.EnrolledStudents)
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Enrolled_student_id");

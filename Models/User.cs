@@ -24,5 +24,9 @@ public partial class User
 
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 
+    public virtual ICollection<Enrolled> EnrolledInstructors { get; set; } = new List<Enrolled>();
+
+    public virtual ICollection<Enrolled> EnrolledStudents { get; set; } = new List<Enrolled>();
+
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }

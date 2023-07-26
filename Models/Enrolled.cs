@@ -13,6 +13,8 @@ public partial class Enrolled
 
     public int? Grade { get; set; }
 
+    public int Id { get; set; }
+
     public virtual Course Course { get; set; } = null!;
 
     public virtual User Instructor { get; set; } = null!;
