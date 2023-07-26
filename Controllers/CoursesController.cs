@@ -48,7 +48,25 @@ namespace online_course_platform.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
-            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id");
+            var users = _context.Users.ToList();
+
+            var roles = _context.Roles.ToList();
+
+            var usersInfo = (from user in users
+                             join role in roles on user.Id equals role.UserId
+                             where role.Role1 == "Instructor"
+                             select new
+                             {
+                                 Id = user.Id,
+                                 firstName = user.FirstName,
+                                 lastName = user.LastName,
+                             }).ToList();
+
+
+            System.Console.WriteLine(usersInfo.Count);
+
+
+            ViewData["InstructorId"] = new SelectList(usersInfo, "Id", "Id");
             return View();
         }
 
@@ -155,14 +173,14 @@ namespace online_course_platform.Controllers
             {
                 _context.Courses.Remove(course);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CourseExists(int id)
         {
-          return (_context.Courses?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Courses?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
