@@ -58,12 +58,9 @@ namespace online_course_platform.Controllers
                              select new
                              {
                                  Id = user.Id,
-                                 firstName = user.FirstName,
-                                 lastName = user.LastName,
                              }).ToList();
 
 
-            System.Console.WriteLine(usersInfo.Count);
 
 
             ViewData["InstructorId"] = new SelectList(usersInfo, "Id", "Id");
@@ -95,12 +92,25 @@ namespace online_course_platform.Controllers
                 return NotFound();
             }
 
+            var users = await _context.Users.ToListAsync();
+
+            var roles = await _context.Roles.ToListAsync();
+
+            var usersInfo = (from user in users
+                             join role in roles on user.Id equals role.UserId
+                             where role.Role1 == "Instructor"
+                             select new
+                             {
+                                 Id = user.Id,
+                             }).ToList();
+
+
             var course = await _context.Courses.FindAsync(id);
             if (course == null)
             {
                 return NotFound();
             }
-            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id", course.InstructorId);
+            ViewData["InstructorId"] = new SelectList(usersInfo, "Id", "Id", course.InstructorId);
             return View(course);
         }
 
