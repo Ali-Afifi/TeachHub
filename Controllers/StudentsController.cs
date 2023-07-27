@@ -83,16 +83,16 @@ namespace online_course_platform.Controllers
                                    select enroll.CourseId).ToList();
 
             var enrolleds = (from course in courses
-                            join cId in alreadyEnrolled on course.Id equals cId
-                            select new
-                            {
-                                Id = course.Id,
-                                CourseName = course.CourseName,
-                                Description = course.Description,
-                                StartDate = course.StartDate,
-                                EndDate = course.EndDate,
-                                Instructor = course.Instructor,
-                            }).ToList();
+                             join cId in alreadyEnrolled on course.Id equals cId
+                             select new
+                             {
+                                 Id = course.Id,
+                                 CourseName = course.CourseName,
+                                 Description = course.Description,
+                                 StartDate = course.StartDate,
+                                 EndDate = course.EndDate,
+                                 Instructor = course.Instructor,
+                             }).ToList();
 
 
 
@@ -160,8 +160,6 @@ namespace online_course_platform.Controllers
 
         // POST
         // Students/Enroll/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Enroll(int id, IFormCollection collection)
@@ -203,6 +201,84 @@ namespace online_course_platform.Controllers
             }
         }
 
+        // GET
+        // Students/Delist/5
+        public async Task<IActionResult> Delist(int? id)
+        {
+            if (id == null || _context.Users == null)
+            {
+                return NotFound();
+            }
+
+
+            var context = _context.Courses.Include(c => c.Instructor);
+
+
+            var courses = await context.ToListAsync();
+            var enrolls = await _context.Enrolleds.ToListAsync();
+
+
+            var alreadyEnrolled = (from enroll in enrolls
+                                   where enroll.StudentId == id
+                                   select enroll.CourseId).ToList();
+
+            var enrolleds = (from course in courses
+                             join cId in alreadyEnrolled on course.Id equals cId
+                             select new
+                             {
+                                 Id = course.Id,
+                                 CourseName = course.CourseName,
+                                 Description = course.Description,
+                                 StartDate = course.StartDate,
+                                 EndDate = course.EndDate,
+                                 Instructor = course.Instructor,
+                             }).ToList();
+
+
+
+            dynamic model = new ExpandoObject();
+
+            model.Courses = enrolleds;
+            return View(model);
+        }
+
+        // POST
+        // Users/Delist/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delist(int id, IFormCollection collection)
+        {
+
+            try
+            {
+                string[] courseInfo = collection["CourseId"].ToString().Split(" ");
+
+                var courseID = int.Parse(courseInfo[0]);
+                var instructorID = int.Parse(courseInfo[1]);
+
+                var enrolled = await _context.Enrolleds.FirstOrDefaultAsync(e => e.StudentId == id && e.InstructorId == instructorID && e.CourseId == courseID);
+
+                if (enrolled != null)
+                {
+                    _context.Enrolleds.Remove(enrolled);
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (System.Exception ex)
+            {
+
+                System.Console.WriteLine("------------exception-start-------");
+                System.Console.WriteLine(ex.Message);
+                System.Console.WriteLine("------------exception--end----------");
+                ViewData["Error"] = "a problem has occurred, please try again";
+
+                return View();
+            }
+
+
+        }
 
     }
 }
