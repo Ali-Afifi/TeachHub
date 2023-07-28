@@ -1,0 +1,52 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<div class="d-flex flex-column justify-content-center align-items-center m-5">
+	<h1><a>My Courses</a></h1>
+</div>
+
+<div class="cont">
+
+@using (Html.BeginForm("Login", "Login", FormMethod.Post)) {
+
+	<div class="d-flex flex-column justify-content-center align-items-center m-5 py-5" id="login-form">
+		<div class="form-outline mt-5 w-50">
+			<input type="text" class="form-control" name="UserName"/>
+			<label class="form-label">User Name</label>
+		</div>
+		<div class="form-outline m-5 w-50">
+			<input type="password" class="form-control" name="Password"/>
+			<label class="form-label">Password</label>
+		</div>
+
+		<div class="form-group mb-5">
+			<input type="submit" value="Login" class="btn btn-primary" />
+		</div> 
+
+	</div>
+
+}
+
+</div>
+
+<style>
+    header {
+        display: none;
+    }
+
+	#login-form {
+		max-width: 100%;
+		border-style: solid;
+		border-color: rgb(201, 196, 196);
+		border-radius: 5%;
+	}
+
+	.cont {
+		max-width: 32vw;
+		margin: auto;
+	}
+</style>
