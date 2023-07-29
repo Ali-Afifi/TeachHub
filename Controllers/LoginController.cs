@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using online_course_platform.Data;
 using online_course_platform.Models;
 using online_course_platform.Utilities;
+using online_course_platform.Filters;
 
 namespace online_course_platform.Controllers
 {
+    // [SessionCheck]    
     public class LoginController : Controller
     {
 
@@ -24,6 +26,11 @@ namespace online_course_platform.Controllers
         // Login/
         public IActionResult Index()
         {
+            var token = HttpContext.Session.GetString("_Token");
+
+            if (!string.IsNullOrEmpty(token)) {
+                return Redirect("/");
+            }
 
             return View();
         }
