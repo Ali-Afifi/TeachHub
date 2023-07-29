@@ -31,6 +31,16 @@
                     </ul>
                 </div>
             </div>
+            <div class="navbar-collapse collapse mx-4 my-2 order-3 dual-collapse2">
+                
+                <form method = "post" asp-controller = "Logout" asp-asp-action = ""> 
+                    <input type = "submit" value = "Logout" class="btn btn-danger nav-item"/> 
+                </form> 
+                
+                @* <a asp-controller="Students" asp-action="Index">
+                    <button class="btn btn-danger nav-item">Logout</button>
+                </a> *@
+            </div>
         </nav>
     </header>
     <div class="container">
