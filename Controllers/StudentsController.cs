@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using online_course_platform.Data;
 using online_course_platform.Models;
+using online_course_platform.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Dynamic;
@@ -12,6 +13,7 @@ using System.Security.Cryptography.Xml;
 
 namespace online_course_platform.Controllers
 {
+    [SessionCheck]
     public class StudentsController : Controller
     {
         private readonly OnlineCoursesContext _context;

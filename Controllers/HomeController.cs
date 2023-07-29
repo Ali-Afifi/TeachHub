@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using online_course_platform.Models;
+using online_course_platform.Filters;
 
 namespace online_course_platform.Controllers;
 
+[SessionCheck]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
