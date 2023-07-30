@@ -1,0 +1,42 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = "Course Students";
+}
+
+
+<h1>Course: @Model.Course.courseName [@Model.Course.courseId]</h1>
+
+
+<h3>Courses</h3>
+	<div class="overflow-scroll h-25">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Student ID</th>
+					<th>Grade</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var enrolled in Model.Course.Enrolleds)
+				{
+					<tr>
+						<td>@enrolled.StudentId</td>
+						@if(enrolled.Grade == null) {
+                            <td>TBD</td>
+
+                        } else {
+                            <tb>@enrolled.Grade</tb>
+                        }
+                        <td>
+                            <a asp-action="Grade" asp-route-student="@enrolled.StudentId" asp-route-course="@Model.Course.courseId">Update</a>
+                        </td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div> 
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
