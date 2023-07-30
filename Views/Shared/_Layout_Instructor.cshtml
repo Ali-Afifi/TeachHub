@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -20,20 +22,15 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">NotUsers</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Instructors" asp-action="Details" asp-route-id='@HttpContextAccessor.HttpContext.Items["userId"]'>Info</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Courses" asp-action="Index">NotCourses</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">NotStudents</a>
-                        </li>
+                        
                     </ul>
                 </div>
             </div>
             <div class="navbar-collapse collapse mx-4 my-2 order-3 dual-collapse2">
                 
-                <form method = "post" asp-controller = "Logout" asp-asp-action = ""> 
+                <form method = "post" asp-controller = "Logout" asp-action = ""> 
                     <input type = "submit" value = "Logout" class="btn btn-danger nav-item"/> 
                 </form> 
                 
