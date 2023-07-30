@@ -11,9 +11,9 @@ public class Authentication
     public static string GenerateJwtToken(int id, string userName, string role)
     {
         var claims = new List<Claim> {
-            new Claim(JwtRegisteredClaimNames.Sid, id.ToString()),
-            new Claim(ClaimTypes.NameIdentifier, userName),
-            new Claim(ClaimTypes.Role, role)
+            new Claim("Id", id.ToString()),
+            new Claim("UserName", userName),
+            new Claim("Role", role)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MY_SECRET_KEY_123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
