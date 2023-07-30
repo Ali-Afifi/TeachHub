@@ -63,6 +63,7 @@
 					<th>Start Date</th>
 					<th>End Date</th>
 					<th>Instructor</th>
+					<th>Grade</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -76,6 +77,15 @@
 						<td>@course.StartDate.ToString("yyyy/MM/dd")</td>
 						<td>@course.EndDate.ToString("yyyy/MM/dd")</td>
 						<td>@course.Instructor.FirstName @course.Instructor.LastName</td>
+
+                        @if(course.Grade == null) {
+                            <td>TBD</td>
+
+                        } else {
+                            <tb>@course.Grade</tb>
+                        }
+
+
 					</tr>
 				}
 			</tbody>
