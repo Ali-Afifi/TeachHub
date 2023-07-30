@@ -82,10 +82,15 @@ namespace online_course_platform.Controllers
 
             var alreadyEnrolled = (from enroll in enrolls
                                    where enroll.StudentId == id
-                                   select enroll.CourseId).ToList();
+                                   select new
+                                   {
+                                       CourseId = enroll.CourseId,
+                                       Grade = enroll.Grade
+                                   }
+                                   ).ToList();
 
             var enrolleds = (from course in courses
-                             join cId in alreadyEnrolled on course.Id equals cId
+                             join en in alreadyEnrolled on course.Id equals en.CourseId
                              select new
                              {
                                  Id = course.Id,
@@ -94,6 +99,7 @@ namespace online_course_platform.Controllers
                                  StartDate = course.StartDate,
                                  EndDate = course.EndDate,
                                  Instructor = course.Instructor,
+                                 Grade = en.Grade
                              }).ToList();
 
 
