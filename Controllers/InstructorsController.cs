@@ -174,6 +174,25 @@ namespace online_course_platform.Controllers
 
         }
 
+        // POST
+        // Instructors/Grade
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Grade(IFormCollection collection)
+        {
+            var grade = collection["Grade"];
+            var courseId = Convert.ToInt32(collection["CourseId"].ToString());
+            var studentId = Convert.ToInt32(collection["StudentId"].ToString());
+
+            var enroll = await _context.Enrolleds.FirstOrDefaultAsync(e => e.CourseId == courseId && e.StudentId == studentId);
+
+            enroll.Grade = Convert.ToInt32(grade);
+
+            _context.Update(enroll);
+            await _context.SaveChangesAsync();
+
+            return Redirect($"/Instructors/Students/{courseId}");
+        }
 
 
     }
