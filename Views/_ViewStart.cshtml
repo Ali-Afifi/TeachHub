@@ -1,3 +1,20 @@
-﻿@{
-    Layout = "_Layout";
+﻿@inject IHttpContextAccessor httpContextaccessor
+
+
+@{
+    try {
+        var userRole = httpContextaccessor.HttpContext.Items["userRole"].ToString();
+
+        if (userRole.Equals("Student")) {
+            Layout = "_Layout_Student";
+        } else if (userRole.Equals("Instructor")) {
+            Layout = "_Layout_Instructor";
+        } else {
+            Layout = "_Layout";
+        }
+
+    } catch {
+        Layout = "_Layout";
+    }
+
 }
