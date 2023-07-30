@@ -1,4 +1,6 @@
 @model dynamic
+@inject IHttpContextAccessor httpContextaccessor
+
 
 @{
     ViewData["Title"] = "Course Students";
@@ -27,7 +29,7 @@
                             <td>TBD</td>
 
                         } else {
-                            <tb>@enrolled.Grade</tb>
+                            <td>@enrolled.Grade</td>
                         }
                         <td>
                             <a asp-action="Grade" asp-route-student="@enrolled.StudentId" asp-route-course="@Model.Course.courseId">Update</a>
@@ -38,5 +40,27 @@
 		</table>
 	</div> 
 <div>
-    <a asp-action="Index">Back to List</a>
+	@{
+        var ID = "";
+        var flag = true;
+
+        try {
+            var userRole = httpContextaccessor.HttpContext.Items["userRole"].ToString();
+            if (userRole.Equals("Instructor")) {
+                ID = httpContextaccessor.HttpContext.Items["userId"].ToString();
+            } 
+
+
+        } catch {
+            flag = false;
+        }
+    }
+
+
+    @if(!flag) {
+        <a asp-action="Index">Back to List</a>
+
+    } else {
+        <a asp-action="Details" asp-route-id="@ID">Back to List</a>
+    } 
 </div>
