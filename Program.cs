@@ -3,7 +3,9 @@ using online_course_platform.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<OnlineCoursesContext>(options => options.UseSqlServer("Server=localhost;Database=Online_Courses;User=sa;Password=Password_123;TrustServerCertificate=true"));
+var connectionString = builder.Configuration.GetConnectionString("DB");
+
+builder.Services.AddDbContext<OnlineCoursesContext>(options => options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -17,6 +19,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromSeconds(60 * 5);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.Name = ".Courses.Session"; 
 }); //
 
 
@@ -28,7 +31,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    // app.UseHsts();
 }
 
 app.UseHttpsRedirection();
