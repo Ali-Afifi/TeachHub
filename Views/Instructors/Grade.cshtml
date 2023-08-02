@@ -126,7 +126,7 @@
 
         try {
             var userRole = httpContextaccessor.HttpContext.Items["userRole"].ToString();
-            if (userRole.Equals("Instructor")) {
+            if (!String.IsNullOrEmpty(userRole) && userRole.Equals("Instructor")) {
                 ID = httpContextaccessor.HttpContext.Items["userId"].ToString();
             } 
 
