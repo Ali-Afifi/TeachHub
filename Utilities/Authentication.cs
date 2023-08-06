@@ -18,7 +18,7 @@ public class Authentication
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MY_SECRET_KEY_123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expires = DateTime.Now.AddMinutes(5);
+        var expires = DateTime.UtcNow.AddMinutes(3);
 
         var token = new JwtSecurityToken(issuer: "http://localhost", claims: claims, expires: expires, signingCredentials: credentials);
 
