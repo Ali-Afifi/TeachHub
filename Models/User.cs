@@ -7,26 +7,34 @@ public partial class User
 {
     public int Id { get; set; }
 
+    public string UserName { get; set; } = null!;
+
     public string FirstName { get; set; } = null!;
 
     public string LastName { get; set; } = null!;
 
-    public DateTime BirthDate { get; set; }
-
     /// <summary>
-    /// 1 --&gt; male       0 --&gt; female
+    /// 1 --&gt; male, 0 --&gt; female
     /// </summary>
     public bool Gender { get; set; }
 
-    public string UserName { get; set; } = null!;
+    public DateTime BirthDate { get; set; }
 
     public string PasswordHash { get; set; } = null!;
 
-    public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
+    public string PasswordHashSalt { get; set; } = null!;
 
-    public virtual ICollection<Enrolled> EnrolledInstructors { get; set; } = new List<Enrolled>();
+    public int? UpdateBy { get; set; }
 
-    public virtual ICollection<Enrolled> EnrolledStudents { get; set; } = new List<Enrolled>();
+    public string? IpAddressOfLastUpdate { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public string? LastUpdateOperation { get; set; }
+
+    public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+
+    public virtual Teach? Teach { get; set; }
 }
