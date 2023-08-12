@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DB");
 
-builder.Services.AddDbContext<OnlineCoursesContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<CoursesSystemContext>(options => options.UseSqlServer(connectionString));
 
 // added services
 
