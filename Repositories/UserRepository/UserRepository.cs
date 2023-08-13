@@ -1,44 +1,70 @@
 using online_course_platform.Models;
 using online_course_platform.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace online_course_platform.Repositories {
+namespace online_course_platform.Repositories
+{
     public class UserRepository : IUserRepository
     {
         private readonly CoursesSystemContext _context;
 
-        public UserRepository(CoursesSystemContext context){
+        public UserRepository(CoursesSystemContext context)
+        {
             _context = context;
         }
 
-        public async void Add(User user)
+        public async Task<bool> Add(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();    
+            await _context.Users.AddAsync(user);
+            return true;
         }
 
-        public void Delete(int id)
+        public bool Delete(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Remove(user);
+            return true;
         }
 
-        public Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<User>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Users.Include(e => e.Enrollments)
+                                       .Include(e => e.Roles)
+                                       .Include(e => e.Teach)
+                                       .Include(e => e.UpdateBy)
+                                       .Include(e => e.UpdatedAt)
+                                       .Include(e => e.IpAddressOfLastUpdate)
+                                       .Include(e => e.LastUpdateOperation)
+                                       .ToListAsync();
         }
 
-        public Task<User> GetById(int id)
+        public async Task<User?> GetById(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Users.Include(e => e.Enrollments)
+                                       .Include(e => e.Roles)
+                                       .Include(e => e.Teach)
+                                       .Include(e => e.UpdateBy)
+                                       .Include(e => e.UpdatedAt)
+                                       .Include(e => e.IpAddressOfLastUpdate)
+                                       .Include(e => e.LastUpdateOperation)
+                                       .FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public Task<User> GetByUserName(string userName)
+        public async Task<User?> GetByUserName(string userName)
         {
-            throw new NotImplementedException();
+            return await _context.Users.Include(e => e.Enrollments)
+                                       .Include(e => e.Roles)
+                                       .Include(e => e.Teach)
+                                       .Include(e => e.UpdateBy)
+                                       .Include(e => e.UpdatedAt)
+                                       .Include(e => e.IpAddressOfLastUpdate)
+                                       .Include(e => e.LastUpdateOperation)
+                                       .FirstOrDefaultAsync(e => e.UserName == userName);
         }
 
-        public User Update(int id, User newUser)
+        public bool Update(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Update(user);
+            return true;
         }
     }
 }
