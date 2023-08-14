@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using online_course_platform.Data;
 using online_course_platform.Services;
+using online_course_platform.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,7 @@ var connectionString = builder.Configuration.GetConnectionString("DB");
 builder.Services.AddDbContext<CoursesSystemContext>(options => options.UseSqlServer(connectionString));
 
 // added services
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllersWithViews();
