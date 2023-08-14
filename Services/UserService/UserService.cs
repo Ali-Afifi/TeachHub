@@ -1,39 +1,153 @@
 using online_course_platform.Models;
-using online_course_platform.Data;
+using online_course_platform.ViewModels;
+using online_course_platform.Repositories;
 
 namespace online_course_platform.Services
 {
     public class UserService : IUserService
     {
-        // private readonly IUserRepository _userRepository;
-        public void Add(User user)
+        private readonly IUserRepository _userRepository;
+
+        public UserService(IUserRepository userRepository)
         {
-            throw new NotImplementedException();
+            _userRepository = userRepository;
         }
 
-        public void Delete(int id)
+
+        public bool Add(UserViewModel userViewModel)
         {
-            throw new NotImplementedException();
+
+            User user = new User();
+            user.UserName = userViewModel.UserName;
+            user.FirstName = userViewModel.FirstName;
+            user.LastName = userViewModel.LastName;
+            user.BirthDate = userViewModel.BirthDate;
+            user.Gender = Convert.ToBoolean((int)userViewModel.Gender);
+
+            if (String.IsNullOrEmpty(userViewModel.PasswordHash) || String.IsNullOrEmpty(userViewModel.PasswordHashSalt))
+            {
+                return false;
+            }
+
+            user.PasswordHash = userViewModel.PasswordHash;
+            user.PasswordHashSalt = userViewModel.PasswordHashSalt;
+
+            _userRepository.Add(user);
+
+            return true;
         }
 
-        public Task<IEnumerable<User>> GetAll()
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetById(id);
+
+            if (user != null)
+            {
+                return _userRepository.Delete(user);
+            }
+
+            return false;
         }
 
-        public Task<User> GetById(int id)
+        public async Task<IEnumerable<UserViewModel>> GetAll()
         {
-            throw new NotImplementedException();
+            var users = await _userRepository.GetAll();
+
+            List<UserViewModel> userViewModelGroup = new List<UserViewModel>();
+
+            foreach (var user in users)
+            {
+                UserViewModel userViewModel = new UserViewModel
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Gender = user.Gender ? Gender.Male : Gender.Female,
+                    BirthDate = user.BirthDate,
+                    Roles = user.Roles,
+                    Enrollments = user.Enrollments,
+                    Teach = user.Teach
+                };
+
+                userViewModelGroup.Add(userViewModel);
+            }
+
+            return userViewModelGroup;
+
         }
 
-        public Task<User> GetByUserName(string userName)
+        public async Task<UserViewModel?> GetById(int id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetById(id);
+
+            if (user != null)
+            {
+                UserViewModel userViewModel = new()
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Gender = user.Gender ? Gender.Male : Gender.Female,
+                    BirthDate = user.BirthDate,
+                    Roles = user.Roles,
+                    Enrollments = user.Enrollments,
+                    Teach = user.Teach
+                };
+                return userViewModel;
+            }
+
+            return null;
+
         }
 
-        public User Update(int id, User newUser)
+        public async Task<UserViewModel?> GetByUserName(string userName)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByUserName(userName);
+
+            if (user != null)
+            {
+                UserViewModel userViewModel = new UserViewModel
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Gender = user.Gender ? Gender.Male : Gender.Female,
+                    BirthDate = user.BirthDate,
+                    Roles = user.Roles,
+                    Enrollments = user.Enrollments,
+                    Teach = user.Teach
+                };
+
+                return userViewModel;
+
+            }
+
+            return null;
+
+        }
+
+        public bool Update(UserViewModel userViewModel)
+        {
+            User user = new User();
+            user.Id = userViewModel.Id;
+            user.UserName = userViewModel.UserName;
+            user.FirstName = userViewModel.FirstName;
+            user.LastName = userViewModel.LastName;
+            user.Gender = Convert.ToBoolean((int)userViewModel.Gender);
+
+            if (String.IsNullOrEmpty(userViewModel.PasswordHash) || String.IsNullOrEmpty(userViewModel.PasswordHashSalt))
+            {
+                return false;
+            }
+
+            user.PasswordHash = userViewModel.PasswordHash;
+            user.PasswordHashSalt = userViewModel.PasswordHashSalt;
+
+            return _userRepository.Update(user);
+
         }
     }
 
