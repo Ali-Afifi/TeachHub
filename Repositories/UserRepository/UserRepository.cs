@@ -13,7 +13,7 @@ namespace online_course_platform.Repositories
             _context = context;
         }
 
-        public async Task<bool> Add(User user)
+        public async Task<bool> Create(User user)
         {
             await _context.Users.AddAsync(user);
             return true;

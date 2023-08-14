@@ -7,7 +7,7 @@ namespace online_course_platform.Repositories
         Task<User?> GetById(int id);
         Task<User?> GetByUserName(string userName);
         Task<IEnumerable<User>> GetAll();
-        Task<bool> Add(User user);
+        Task<bool> Create(User user);
         bool Update(User user);
         bool Delete(User user);
 
