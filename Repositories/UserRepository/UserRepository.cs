@@ -30,11 +30,9 @@ namespace online_course_platform.Repositories
             return await _context.Users.Include(e => e.Enrollments)
                                        .Include(e => e.Roles)
                                        .Include(e => e.Teach)
-                                       .Include(e => e.UpdateBy)
-                                       .Include(e => e.UpdatedAt)
-                                       .Include(e => e.IpAddressOfLastUpdate)
-                                       .Include(e => e.LastUpdateOperation)
                                        .ToListAsync();
+
+            // return await _context.Users.ToListAsync();
         }
 
         public async Task<User?> GetById(int id)
@@ -42,10 +40,6 @@ namespace online_course_platform.Repositories
             return await _context.Users.Include(e => e.Enrollments)
                                        .Include(e => e.Roles)
                                        .Include(e => e.Teach)
-                                       .Include(e => e.UpdateBy)
-                                       .Include(e => e.UpdatedAt)
-                                       .Include(e => e.IpAddressOfLastUpdate)
-                                       .Include(e => e.LastUpdateOperation)
                                        .FirstOrDefaultAsync(e => e.Id == id);
         }
 
@@ -54,10 +48,6 @@ namespace online_course_platform.Repositories
             return await _context.Users.Include(e => e.Enrollments)
                                        .Include(e => e.Roles)
                                        .Include(e => e.Teach)
-                                       .Include(e => e.UpdateBy)
-                                       .Include(e => e.UpdatedAt)
-                                       .Include(e => e.IpAddressOfLastUpdate)
-                                       .Include(e => e.LastUpdateOperation)
                                        .FirstOrDefaultAsync(e => e.UserName == userName);
         }
 
