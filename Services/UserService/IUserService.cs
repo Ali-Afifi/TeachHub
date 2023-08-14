@@ -8,7 +8,7 @@ namespace online_course_platform.Services
         Task<IEnumerable<UserViewModel>> GetAll();
         Task<UserViewModel?> GetById(int id);
         Task<UserViewModel?> GetByUserName(string userName);
-        bool Add(UserViewModel userViewModel);
+        bool Create(UserViewModel userViewModel);
         bool Update(UserViewModel userViewModel);
         Task<bool> Delete(int id);
 
