@@ -16,12 +16,14 @@ namespace online_course_platform.Repositories
         public async Task<bool> Create(User user)
         {
             await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return true;
         }
 
         public bool Delete(User user)
         {
             _context.Users.Remove(user);
+            _context.SaveChanges();
             return true;
         }
 
@@ -54,6 +56,8 @@ namespace online_course_platform.Repositories
         public bool Update(User user)
         {
             _context.Users.Update(user);
+            _context.SaveChanges();
+
             return true;
         }
     }
