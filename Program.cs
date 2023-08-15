@@ -12,6 +12,7 @@ builder.Services.AddDbContext<CoursesSystemContext>(options => options.UseSqlSer
 // added services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<AuthenticationService, AuthenticationService>();
 
 builder.Services.AddControllersWithViews();
 
