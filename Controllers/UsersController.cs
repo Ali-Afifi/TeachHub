@@ -79,13 +79,6 @@ namespace online_course_platform.Controllers
             if (form != null && !String.IsNullOrEmpty(form["UserName"]) && !String.IsNullOrEmpty(form["Password"]) && !String.IsNullOrEmpty(form["FirstName"]) && !String.IsNullOrEmpty(form["LastName"]) && !String.IsNullOrEmpty(form["Role"]) && !String.IsNullOrEmpty(form["Gender"]) && !String.IsNullOrEmpty(form["BirthDate"]))
             {
 
-                var keys = form.Keys;
-
-                foreach (var key in keys)
-                {
-                    System.Console.WriteLine($"{key}: {form[key]}");
-                }
-
                 UserViewModel user = new UserViewModel();
                 user.UserName = form["UserName"];
                 user.FirstName = form["FirstName"];
@@ -98,12 +91,7 @@ namespace online_course_platform.Controllers
                 user.PasswordHash = password.PasswordHash;
                 user.PasswordHashSalt = password.Salt;
 
-                System.Console.WriteLine(user.PasswordHash);
-                System.Console.WriteLine(user.PasswordHashSalt);
-
                 bool isUserCreated = await _userService.Create(user);
-
-                System.Console.WriteLine(isUserCreated);
 
                 if (isUserCreated)
                 {
