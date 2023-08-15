@@ -14,7 +14,7 @@ namespace online_course_platform.Services
         }
 
 
-        public bool Create(UserViewModel userViewModel)
+        public async Task<bool> Create(UserViewModel userViewModel)
         {
 
             User user = new User();
@@ -32,7 +32,7 @@ namespace online_course_platform.Services
             user.PasswordHash = userViewModel.PasswordHash;
             user.PasswordHashSalt = userViewModel.PasswordHashSalt;
 
-            _userRepository.Create(user);
+            await _userRepository.Create(user);
 
             return true;
         }
