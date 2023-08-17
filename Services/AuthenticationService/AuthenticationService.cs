@@ -7,7 +7,7 @@ namespace online_course_platform.Services;
 public class AuthenticationService
 {
 
-    public Password HashPassword(string password)
+    public HashedPasswordWithSalt HashPassword(string password)
     {
         int saltLength = 16;
         int hashLength = 32;
@@ -24,7 +24,7 @@ public class AuthenticationService
 
 
 
-        return new Password(hashed, Convert.ToBase64String(salt));
+        return new HashedPasswordWithSalt(hashed, Convert.ToBase64String(salt));
 
 
     }
