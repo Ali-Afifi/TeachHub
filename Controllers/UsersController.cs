@@ -11,6 +11,7 @@ using online_course_platform.ViewModels;
 using online_course_platform.Services;
 using NuGet.Protocol.Plugins;
 using System.Runtime.Intrinsics.Arm;
+using Microsoft.Extensions.Primitives;
 
 namespace online_course_platform.Controllers
 {
@@ -76,33 +77,24 @@ namespace online_course_platform.Controllers
         {
 
 
-            if (form != null && !String.IsNullOrEmpty(form["UserName"]) && !String.IsNullOrEmpty(form["Password"]) && !String.IsNullOrEmpty(form["FirstName"]) && !String.IsNullOrEmpty(form["LastName"]) && !String.IsNullOrEmpty(form["Role"]) && !String.IsNullOrEmpty(form["Gender"]) && !String.IsNullOrEmpty(form["BirthDate"]))
+            if (form is null || !IsCreateUserFormFilled(form))
             {
+                ViewData["Error"] = "Please fill the whole form";
 
-                UserViewModel user = new UserViewModel();
-                user.UserName = form["UserName"];
-                user.FirstName = form["FirstName"];
-                user.LastName = form["LastName"];
-                user.Gender = form["Gender"] == "Male" ? Gender.Male : Gender.Female;
-                user.BirthDate = DateTime.Parse(form["BirthDate"]);
-
-                Password password = _authenticationService.HashPassword(form["Password"]);
-
-                user.PasswordHash = password.PasswordHash;
-                user.PasswordHashSalt = password.Salt;
-
-                bool isUserCreated = await _userService.Create(user);
-
-                if (isUserCreated)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
+                return View(nameof(Create));
             }
 
-            ViewData["Error"] = "Please fill the whole form";
+            UserViewModel user = MapCreateUserFormToUserViewModel(form);
 
-            return View(nameof(Create));
+            if (!await _userService.Create(user))
+            {
+                ViewData["Error"] = "Something went wrong. Please try again";
+
+                return View(nameof(Create));
+            }
+
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: Users/Edit/5
@@ -197,5 +189,38 @@ namespace online_course_platform.Controllers
         // {
         //     return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         // }
+
+        
+        private UserViewModel MapCreateUserFormToUserViewModel(IFormCollection form)
+        {
+
+            UserViewModel user = new UserViewModel();
+
+            user.UserName = form["UserName"];
+            user.FirstName = form["FirstName"];
+            user.LastName = form["LastName"];
+            user.Gender = form["Gender"] == "Male" ? Gender.Male : Gender.Female;
+
+            user.BirthDate = DateTime.Parse(form["BirthDate"]);
+
+            HashedPasswordWithSalt password = _authenticationService.HashPassword(form["Password"]);
+
+            user.PasswordHash = password.PasswordHash;
+            user.PasswordHashSalt = password.Salt;
+
+            return user;
+        }
+
+
+        private bool IsCreateUserFormFilled(IFormCollection form)
+        {
+            return !StringValues.IsNullOrEmpty(form["UserName"])
+                && !StringValues.IsNullOrEmpty(form["Password"])
+                && !StringValues.IsNullOrEmpty(form["FirstName"])
+                && !StringValues.IsNullOrEmpty(form["LastName"])
+                && !StringValues.IsNullOrEmpty(form["Role"])
+                && !StringValues.IsNullOrEmpty(form["Gender"])
+                && !StringValues.IsNullOrEmpty(form["BirthDate"]);
+        }
     }
 }
