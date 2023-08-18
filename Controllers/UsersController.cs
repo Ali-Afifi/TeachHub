@@ -203,7 +203,7 @@ namespace online_course_platform.Controllers
 
             user.BirthDate = DateTime.Parse(form["BirthDate"]);
 
-            HashedPasswordWithSalt password = _authenticationService.HashPassword(form["Password"]);
+            HashedPasswordWithSalt password = _authenticationService.HashPasswordWithGeneratedSalt(form["Password"]);
 
             user.PasswordHash = password.PasswordHash;
             user.PasswordHashSalt = password.Salt;
