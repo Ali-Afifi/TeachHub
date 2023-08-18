@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 
@@ -6,26 +7,31 @@ namespace online_course_platform.Services;
 
 public class AuthenticationService
 {
-
-    public HashedPasswordWithSalt HashPassword(string password)
+    private readonly int saltLengthInBytes = 16;
+    private readonly int hashLengthInBytes = 32;
+    private readonly int hashingIterationCount = 100000;
+    public HashedPasswordWithSalt HashPasswordWithGeneratedSalt(string password)
     {
-        int saltLength = 16;
-        int hashLength = 32;
-        int iterationCount = 100000;
+        byte[] salt = GenerateSalt();
+        string hashed = Convert.ToBase64String(HashPassword(password, salt));
+        return new HashedPasswordWithSalt(hashed, Convert.ToBase64String(salt));
+    }
 
-        byte[] salt = RandomNumberGenerator.GetBytes(saltLength);
+    private byte[] GenerateSalt()
+    {
+        byte[] salt = RandomNumberGenerator.GetBytes(saltLengthInBytes);
+        return salt;
+    }
 
-        string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+    public byte[] HashPassword(string password, byte[] salt)
+    {
+        byte[] hash = KeyDerivation.Pbkdf2(
             password: password!,
             salt: salt,
             prf: KeyDerivationPrf.HMACSHA256,
-            iterationCount: iterationCount,
-            numBytesRequested: hashLength));
+            iterationCount: hashingIterationCount,
+            numBytesRequested: hashLengthInBytes);
 
-
-
-        return new HashedPasswordWithSalt(hashed, Convert.ToBase64String(salt));
-
-
+        return hash;
     }
 }
