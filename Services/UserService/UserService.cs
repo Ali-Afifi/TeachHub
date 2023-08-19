@@ -32,9 +32,7 @@ namespace online_course_platform.Services
             user.PasswordHash = userViewModel.PasswordHash;
             user.PasswordHashSalt = userViewModel.PasswordHashSalt;
 
-            await _userRepository.Create(user);
-
-            return true;
+            return await _userRepository.Create(user);
         }
 
         public async Task<bool> Delete(int id)
@@ -43,15 +41,20 @@ namespace online_course_platform.Services
 
             if (user != null)
             {
-                return _userRepository.Delete(user);
+                return await _userRepository.Delete(user);
             }
 
             return false;
         }
 
-        public async Task<IEnumerable<UserViewModel>> GetAll()
+        public async Task<IEnumerable<UserViewModel>?> GetAll()
         {
             var users = await _userRepository.GetAll();
+
+            if (users == null)
+            {
+                return null;
+            }
 
             List<UserViewModel> userViewModelGroup = new List<UserViewModel>();
 
@@ -129,7 +132,7 @@ namespace online_course_platform.Services
 
         }
 
-        public bool Update(UserViewModel userViewModel)
+        public async Task<bool> Update(UserViewModel userViewModel)
         {
             User user = new User();
             user.Id = userViewModel.Id;
@@ -146,7 +149,7 @@ namespace online_course_platform.Services
             user.PasswordHash = userViewModel.PasswordHash;
             user.PasswordHashSalt = userViewModel.PasswordHashSalt;
 
-            return _userRepository.Update(user);
+            return await _userRepository.Update(user);
 
         }
     }
