@@ -15,50 +15,98 @@ namespace online_course_platform.Repositories
 
         public async Task<bool> Create(User user)
         {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return true;
+            try
+            {
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine($"DB Error: {e.Message}");
+                return false;
+            }
         }
 
-        public bool Delete(User user)
+        public async Task<bool> Delete(User user)
         {
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            return true;
+            try
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine($"DB Error: {e.Message}");
+                return false;
+            }
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<User>?> GetAll()
         {
-            return await _context.Users.Include(e => e.Enrollments)
-                                       .Include(e => e.Roles)
-                                       .Include(e => e.Teach)
-                                       .ToListAsync();
+            try
+            {
+                return await _context.Users.Include(e => e.Enrollments)
+                                           .Include(e => e.Roles)
+                                           .Include(e => e.Teach)
+                                           .ToListAsync();
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine($"DB Error: {e.Message}");
+                return null;
+            }
 
             // return await _context.Users.ToListAsync();
         }
 
         public async Task<User?> GetById(int id)
         {
-            return await _context.Users.Include(e => e.Enrollments)
-                                       .Include(e => e.Roles)
-                                       .Include(e => e.Teach)
-                                       .FirstOrDefaultAsync(e => e.Id == id);
+            try
+            {
+                return await _context.Users.Include(e => e.Enrollments)
+                                           .Include(e => e.Roles)
+                                           .Include(e => e.Teach)
+                                           .FirstOrDefaultAsync(e => e.Id == id);
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine($"DB Error: {e.Message}");
+                return null;
+            }
         }
 
         public async Task<User?> GetByUserName(string userName)
         {
-            return await _context.Users.Include(e => e.Enrollments)
-                                       .Include(e => e.Roles)
-                                       .Include(e => e.Teach)
-                                       .FirstOrDefaultAsync(e => e.UserName == userName);
+            try
+            {
+                return await _context.Users.Include(e => e.Enrollments)
+                                           .Include(e => e.Roles)
+                                           .Include(e => e.Teach)
+                                           .FirstOrDefaultAsync(e => e.UserName == userName);
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine($"DB Error: {e.Message}");
+                return null;
+            }
         }
 
-        public bool Update(User user)
+        public async Task<bool> Update(User user)
         {
-            _context.Users.Update(user);
-            _context.SaveChanges();
+            try
+            {
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
 
-            return true;
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine($"DB Error: {e.Message}");
+                return false;
+            }
         }
     }
 }

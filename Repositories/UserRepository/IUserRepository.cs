@@ -6,10 +6,10 @@ namespace online_course_platform.Repositories
     {
         Task<User?> GetById(int id);
         Task<User?> GetByUserName(string userName);
-        Task<IEnumerable<User>> GetAll();
+        Task<IEnumerable<User>?> GetAll();
         Task<bool> Create(User user);
-        bool Update(User user);
-        bool Delete(User user);
+        Task<bool> Update(User user);
+        Task<bool> Delete(User user);
 
     }
 }
