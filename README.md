@@ -1,4 +1,4 @@
-# Online Course Platform
+# Teach Hub
 
 An **ASP.NET** project designed to provide a platform for managing online courses. This platform supports features such as course creation, user enrollment, and role-based access.
 
@@ -53,7 +53,7 @@ An **ASP.NET** project designed to provide a platform for managing online course
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Ali-Afifi/online-course-platform.git
+   git clone https://github.com/Ali-Afifi/TeachHub.git
    ```
 
 2. Navigate to the project directory:
@@ -100,7 +100,7 @@ docker run -p 5000:5000 online-course-platform
 ## Project Structure
 
 ```
-online-course-platform/
+TeachHub/
 ├── Controllers/
 │   ├── CoursesController.cs
 │   ├── StudentsController.cs
